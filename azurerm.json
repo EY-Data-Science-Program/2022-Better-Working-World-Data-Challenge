@@ -11,11 +11,11 @@
     },
     "InstanceType": {
       "type": "string",
-      "defaultValue": "CPU-14GB",
+      "defaultValue": "CPU-8GB",
       "allowedValues": [
-        "CPU-7GB",
-        "CPU-14GB",
-        "CPU-28GB",
+        "CPU-8GB",
+        "CPU-16GB",
+        "CPU-32GB",
         "GPU-56GB"
       ],
       "metadata": {
@@ -43,9 +43,9 @@
     "storageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
     "storageAccountKind": "Storage",
     "vmSize": {
-      "CPU-7GB": "Standard_D2_v2",
-      "CPU-14GB": "Standard_D3_v2",
-      "CPU-28GB": "Standard_D4_v2",
+      "CPU-8GB": "Standard_D2s_v5",
+      "CPU-16GB": "Standard_D4_v5",
+      "CPU-32GB": "Standard_D8_v5",
       "GPU-56GB": "Standard_NC6"
     },
     "diskSizeGB": "32",
