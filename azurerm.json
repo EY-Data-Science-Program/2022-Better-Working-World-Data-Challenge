@@ -4,7 +4,7 @@
   "parameters": {
     "InstanceName": {
       "type": "string",
-      "defaultValue": "EY_Challenge_2022",
+      "defaultValue": "EYChallenge2022",
       "metadata": {
         "description": "The name of the VM instance."
       }
