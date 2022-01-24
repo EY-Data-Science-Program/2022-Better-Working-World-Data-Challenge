@@ -11,7 +11,7 @@
     },
     "InstanceType": {
       "type": "string",
-      "defaultValue": "CPU-16GB",
+      "defaultValue": "CPU-14GB",
       "allowedValues": [
         "CPU-7GB",
         "CPU-14GB",
