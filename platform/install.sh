@@ -16,5 +16,7 @@ try curl github.com
 wget --header "Authorization:  token $token" $url -O /tmp/archive.zip
 unzip /tmp/archive.zip
 codepath=/home/frog/challenge
-mv 2022-Better-Working-World-Data-Challenge-main $codepath
+mkdir -p $codepath
+mv 2022-Better-Working-World-Data-Challenge-main/notebooks $codepath/
+mv 2022-Better-Working-World-Data-Challenge-main/data $codepath/
 chown -R frog:frog $codepath
