@@ -13,8 +13,10 @@
       "type": "string",
       "defaultValue": "CPU-16GB",
       "allowedValues": [
-        "CPU-16GB",
-        "GPU-56GB"
+        "CPU-7GB",
+        "CPU-14GB",
+        "CPU-28GB",
+        "GPU-56GB",
       ],
       "metadata": {
         "description": "Instance size"
