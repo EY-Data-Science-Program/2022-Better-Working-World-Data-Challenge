@@ -16,7 +16,7 @@
         "CPU-7GB",
         "CPU-14GB",
         "CPU-28GB",
-        "GPU-56GB",
+        "GPU-56GB"
       ],
       "metadata": {
         "description": "Instance size"
