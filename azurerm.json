@@ -41,12 +41,10 @@
     "storageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
     "storageAccountKind": "Storage",
     "vmSize": {
-      "CPU-4GB": "Standard_B2s",
-      "CPU-7GB": "Standard_DS2_v2",
-      "CPU-8GB": "Standard_D2s_v3",
-      "CPU-14GB": "Standard_DS3_v2",
-      "CPU-16GB": "Standard_D4s_v3",
-      "GPU-56GB": "Standard_NC6_Promo"
+      "CPU-7GB": "Standard_D2_v2",
+      "CPU-14GB": "Standard_D3_v2",
+      "CPU-28GB": "Standard_D4_v2",
+      "GPU-56GB": "Standard_NC6"
     },
     "diskSizeGB": "32",
     "vmName": "[concat(parameters('InstanceName'),'-', parameters('InstanceType'))]",
@@ -179,7 +177,7 @@
               "publicKeys": [
                 {
                   "path": "/home/frog/.ssh/authorized_keys",
-                  "keyData": "[parameters('sshPublicKey')]"
+                  "keyData": "[parameters('SshPublicKey')]"
                 }
               ]
             }
