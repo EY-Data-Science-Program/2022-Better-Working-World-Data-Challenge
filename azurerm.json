@@ -1,0 +1,224 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "InstanceName": {
+      "type": "string",
+      "defaultValue": "EY_Challenge_2022",
+      "metadata": {
+        "description": "The name of the VM instance."
+      }
+    },
+    "InstanceType": {
+      "type": "string",
+      "defaultValue": "CPU-16GB",
+      "allowedValues": [
+        "CPU-16GB",
+        "GPU-56GB"
+      ],
+      "metadata": {
+        "description": "Instance size"
+      }
+    },
+    "SshPublicKey": {
+      "type": "string",
+      "metadata": {
+        "description": "SSH Public Key for the Virtual Machine."
+      }
+    },
+    "Password": {
+      "type": "secureString",
+      "metadata": {
+        "description": "Password to log in to the VM and services."
+      }
+    }
+  },
+  "variables": {
+    "Region": "[resourceGroup().location]",
+    "networkInterfaceName": "[concat(parameters('InstanceName'),'NetInt')]",
+    "publicIpAddressName": "[concat(parameters('InstanceName'), 'PublicIP' )]",
+    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
+    "storageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
+    "storageAccountKind": "Storage",
+    "vmSize": {
+      "CPU-4GB": "Standard_B2s",
+      "CPU-7GB": "Standard_DS2_v2",
+      "CPU-8GB": "Standard_D2s_v3",
+      "CPU-14GB": "Standard_DS3_v2",
+      "CPU-16GB": "Standard_D4s_v3",
+      "GPU-56GB": "Standard_NC6_Promo"
+    },
+    "diskSizeGB": "32",
+    "vmName": "[concat(parameters('InstanceName'),'-', parameters('InstanceType'))]",
+    "virtualNetworkName": "eychallenge-vnet",
+    "subnetName": "eychallenge-subnet"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-06-01",
+      "name": "[variables('virtualNetworkName')]",
+      "location": "[variables('Region')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.0.0.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "10.0.0.0/24"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIpAddresses",
+      "apiVersion": "2019-06-01",
+      "name": "[variables('publicIpAddressName')]",
+      "location": "[variables('Region')]",
+      "properties": {
+        "publicIpAllocationMethod": "Dynamic"
+      },
+      "sku": {
+        "name": "Basic",
+        "tier": "Regional"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2019-06-01",
+      "name": "[variables('networkInterfaceName')]",
+      "location": "[variables('Region')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "[resourceId('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              },
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIpAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('publicIpAddressName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[variables('Region')]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+       "kind": "[variables('storageAccountKind')]"
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2019-07-01",
+      "name": "[variables('vmName')]",
+      "location": "[variables('Region')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('vmSize')[parameters('InstanceType')]]"
+        },
+        "storageProfile": {
+          "osDisk": {
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "Standard_LRS"
+            }
+          },
+          "dataDisks": [
+            {
+              "lun": 0,
+              "name": "[concat('Datadisk', parameters('InstanceName'))]",
+              "createOption": "Empty",
+              "diskSizeGB": "[variables('diskSizeGB')]",
+              "managedDisk": {
+                "storageAccountType": "StandardSSD_LRS"
+              }
+            }
+          ],
+          "imageReference": {
+            "publisher": "microsoft-dsvm",
+            "offer": "ubuntu-1804",
+            "sku": "1804-gen2",
+            "version": "latest"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+            }
+          ]
+        },
+        "osProfile": {
+          "computerName": "[parameters('InstanceName')]",
+          "adminUsername": "frog",
+          "adminPassword": "[parameters('Password')]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "/home/frog/.ssh/authorized_keys",
+                  "keyData": "[parameters('sshPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat(reference(variables('storageAccountName')).primaryEndpoints.blob)]"
+          }
+        }
+      },
+      "resources": [
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "apiVersion": "2019-07-01",
+          "name": "[concat(variables('vmName'),'/installscript')]",
+          "location": "[variables('Region')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
+          ],
+          "tags": {
+            "displayName": "Execute my custom script"
+          },
+          "properties": {
+            "publisher": "Microsoft.Azure.Extensions",
+            "type": "CustomScript",
+            "typeHandlerVersion": "2.0",
+            "autoUpgradeMinorVersion": true,
+            "protectedSettings": {
+              "fileUris": [
+                "https://raw.githubusercontent.com/EY-Data-Science-Program/2022-Better-Working-World-Data-Challenge/main/install.sh"
+              ],
+              "commandToExecute": "[concat('bash install.sh ', ' 2>&1 | tee -a /var/log/install.log')]"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": { }
+}
