@@ -1,4 +1,6 @@
 **/*.tiff
 **/*.nc
 **/.ipynb_checkpoints
-__pycache__/
+**/__pycache__/
+**/training_data/
+./notebooks/files/output/
