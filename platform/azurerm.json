@@ -211,7 +211,7 @@
             "autoUpgradeMinorVersion": true,
             "protectedSettings": {
               "fileUris": [
-                "https://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@raw.githubusercontent.com/EY-Data-Science-Program/2022-Better-Working-World-Data-Challenge/main/platform/install.sh"
+                "https://raw.githubusercontent.com/EY-Data-Science-Program/2022-Better-Working-World-Data-Challenge/main/platform/install.sh?token=GHSAT0AAAAAABQ7P3C4TAD5D6OOPEXT6LDOYQMFHVA"
               ],
               "commandToExecute": "[concat('bash install.sh ', ' 2>&1 | tee -a /var/log/install.log')]"
             }
