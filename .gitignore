@@ -7,3 +7,4 @@ notebooks/files/output/
 data/test_data/FrogID_Private_data_EY_Feb2022.csv
 data/test_data/test_dataset_summary.ipynb
 data/test_data/frog_map_test.html
+data/test_data/**/test_*
