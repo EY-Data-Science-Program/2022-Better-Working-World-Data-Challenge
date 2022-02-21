@@ -4,7 +4,7 @@
 **/__pycache__/
 **/training_data/
 notebooks/files/output/
-data/test_data/FrogID_Private_data_EY_Feb2022.csv
-data/test_data/test_dataset_summary.ipynb
-data/test_data/frog_map_test.html
-data/test_data/**/test_*
+data/test_data/
+data/all_training_data/
+data/training_data/
+data/training_set_all.zip
