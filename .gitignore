@@ -2,14 +2,7 @@
 **/*.nc
 **/.ipynb_checkpoints
 **/__pycache__/
-**/training_data/
 notebooks/files/output/
-data/test_data/
-data/all_training_data/
-data/training_data/
-data/training_set_all.zip
-data/all_data.zip
-data/all_data/
-data/training_set_query_all_frogs.json
-data/training_set_query_select_frogs.json
-data/untitled.py
+notebooks/level_2_challenge/output/
+data/
+notebooks/training_data/
