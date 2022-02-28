@@ -5,6 +5,6 @@ Life in all its various forms is biodiversity. This variety of life is fundament
 
 Join us to collectively help save the plants, animals and microorganisms that are critical to a healthy society and a thriving economy.
 
-Choose from three available options, from beginner to advanced – all are welcome. Curated learning programs from EY, Data Camp and Microsoft to will help you prepare.
+This Git repository contains various helpful resources for you to get started on Challenge 1 and 2 of the EY Better Working World Data Challenge 2022.
 
 If you haven't already, please visit the [EY 2022 Better Working World Data Challenge Website](https://challenge.ey.com/) to register and learn more about the challenges!
