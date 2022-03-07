@@ -9,19 +9,24 @@ function try() {
 
 set -x
 
-# Get our code
-try curl github.com
-url=https://codeload.github.com/EY-Data-Science-Program/2022-Better-Working-World-Data-Challenge/zip/main
-# token=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
-# wget --header "Authorization:  token $token" $url -O /tmp/archive.zip
-wget $url -O /tmp/archive.zip
-unzip /tmp/archive.zip
-cd 2022-Better-Working-World-Data-Challenge-main/notebooks
-unzip GBIF_Training_Data.zip ./training_data
-rm -r GBIF_Training_Data.zip
-cd ../..
+# Set up challenge directory
 codepath=/home/frog/notebooks/challenge
 mkdir -p $codepath
+cd /home/frog/
+
+# Download repository zipfile from GitHub and unpack
+# Note that files in the /tmp folder are purged automatically when the VM is shut down
+try curl github.com
+url=https://codeload.github.com/EY-Data-Science-Program/2022-Better-Working-World-Data-Challenge/zip/main
+wget $url -O /tmp/archive.zip
+unzip /tmp/archive.zip
+
+# Unpack training data for consumption
+cd 2022-Better-Working-World-Data-Challenge-main/notebooks
+unzip GBIF_Training_Data.zip -d training_data
+rm -r GBIF_Training_Data.zip    
+cd ../..
+
+# Move notebooks folder into final directory (/home/frog/notebooks/challenge/notebooks/... will be the final location of the various jupyter notebooks, training data and requirements.txt used for development requirements).
 mv 2022-Better-Working-World-Data-Challenge-main/notebooks $codepath/
-# mv 2022-Better-Working-World-Data-Challenge-main/data $codepath/
 sudo chown -R frog:frog $codepath
