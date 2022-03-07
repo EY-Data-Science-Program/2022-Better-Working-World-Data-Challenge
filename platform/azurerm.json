@@ -13,12 +13,12 @@
       "type": "string",
       "defaultValue": "D2v4-CPU-8GB",
       "allowedValues": [
-        "D2v5 CPU-8GB",
-        "D4v5 CPU-16GB",
-        "D8v5 CPU-32GB",
-        "D2v4 CPU-8GB",
-        "D4v4 CPU-16GB",
-        "D8v4 CPU-32GB"
+        "D2v5-CPU-8GB",
+        "D4v5-CPU-16GB",
+        "D8v5-CPU-32GB",
+        "D2v4-CPU-8GB",
+        "D4v4-CPU-16GB",
+        "D8v4-CPU-32GB"
       ],
       "metadata": {
         "description": "Instance size"
@@ -45,12 +45,12 @@
     "storageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
     "storageAccountKind": "Storage",
     "vmSize": {
-      "D2v5 CPU-8GB": "Standard_D2s_v5",
-      "D4v5 CPU-16GB": "Standard_D4_v5",
-      "D8v5 CPU-32GB": "Standard_D8_v5",
-      "D2v4 CPU-8GB": "Standard_D2s_v4",
-      "D4v4 CPU-16GB": "Standard_D4_v4",
-      "D8v4 CPU-32GB": "Standard_D8_v4"
+      "D2v5-CPU-8GB": "Standard_D2s_v5",
+      "D4v5-CPU-16GB": "Standard_D4_v5",
+      "D8v5-CPU-32GB": "Standard_D8_v5",
+      "D2v4-CPU-8GB": "Standard_D2s_v4",
+      "D4v4-CPU-16GB": "Standard_D4_v4",
+      "D8v4-CPU-32GB": "Standard_D8_v4"
     },
     "diskSizeGB": "32",
     "vmName": "[concat(parameters('InstanceName'),'-', parameters('InstanceType'))]",
