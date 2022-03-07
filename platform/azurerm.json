@@ -11,7 +11,7 @@
     },
     "InstanceType": {
       "type": "string",
-      "defaultValue": "CPU-8GB",
+      "defaultValue": "D2v4-CPU-8GB",
       "allowedValues": [
         "D2v5 CPU-8GB",
         "D4v5 CPU-16GB",
