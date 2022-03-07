@@ -16,8 +16,9 @@ url=https://codeload.github.com/EY-Data-Science-Program/2022-Better-Working-Worl
 # wget --header "Authorization:  token $token" $url -O /tmp/archive.zip
 wget $url -O /tmp/archive.zip
 unzip /tmp/archive.zip
-# cd 2022-Better-Working-World-Data-Challenge-main/data
-# tar xvjf GBIF_Occurence_Data_v1.tar.bz
+cd 2022-Better-Working-World-Data-Challenge-main/notebooks
+unzip GBIF_Training_Data.zip
+rm -r GBIF_Training_Data.zip
 cd ../..
 codepath=/home/frog/notebooks/challenge
 mkdir -p $codepath
