@@ -17,7 +17,7 @@ url=https://codeload.github.com/EY-Data-Science-Program/2022-Better-Working-Worl
 wget $url -O /tmp/archive.zip
 unzip /tmp/archive.zip
 cd 2022-Better-Working-World-Data-Challenge-main/notebooks
-unzip GBIF_Training_Data.zip
+unzip GBIF_Training_Data.zip ./training_data
 rm -r GBIF_Training_Data.zip
 cd ../..
 codepath=/home/frog/notebooks/challenge
