@@ -19,8 +19,8 @@ unzip /tmp/archive.zip
 # cd 2022-Better-Working-World-Data-Challenge-main/data
 # tar xvjf GBIF_Occurence_Data_v1.tar.bz
 cd ../..
-codepath=/home/notebooks/frog/challenge
+codepath=/home/frog/notebooks/challenge
 mkdir -p $codepath
 mv 2022-Better-Working-World-Data-Challenge-main/notebooks $codepath/
 # mv 2022-Better-Working-World-Data-Challenge-main/data $codepath/
-chown -R frog:frog $codepath
+sudo chown -R frog:frog $codepath
