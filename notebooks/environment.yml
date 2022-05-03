@@ -1,0 +1,5 @@
+name: ey_test
+channels:
+  - conda-forge
+  - defaults
+prefix: /anaconda/envs/py38_default/envs/ey_test
