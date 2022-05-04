@@ -1,4 +1,4 @@
-name: DSC2022
+name: 2022DSC
 channels:
   - conda-forge
   - defaults
@@ -28,4 +28,4 @@ dependencies:
   - azure-core=1.14.0
   - azure-identity=1.8.0
   - azure-storage-blob=12.9.0
-prefix: /anaconda/envs/DSC2022
+prefix: /anaconda/envs/2022DSC
