@@ -1,5 +1,31 @@
-name: ey_test
+name: 2022DSC
 channels:
   - conda-forge
   - defaults
-prefix: /anaconda/envs/py38_default/envs/ey_test
+dependencies:
+  - python=3.8.10
+  - pandas=1.4.1
+  - numpy=1.20.3
+  - numpy-base=1.20.3
+  - matplotlib-base=3.5.1
+  - matplotlib-inline=0.1.2
+  - contextily=1.2.0
+  - rioxarray=0.10.2
+  - xarray=0.20.1
+  - xarray-spatial=0.3.2
+  - zarr=2.8.1
+  - aiohttp=3.8.1
+  - requests=2.27.1
+  - requests-oauthlib=1.3.0
+  - pystac=1.2.0
+  - pystac-client=0.3.2
+  - planetary-computer=0.4.5
+  - nb_conda_kernels=2.3.1
+  - scikit-learn=1.0.2
+  - fsspec=2022.1.0
+  - shapely=1.7.1
+  - stackstac=0.3.1
+  - azure-core=1.14.0
+  - azure-identity=1.8.0
+  - azure-storage-blob=12.9.0
+prefix: /anaconda/envs/2022DSC
