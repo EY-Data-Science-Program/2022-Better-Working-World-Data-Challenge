@@ -28,6 +28,7 @@ class SentinelMosaic:
             container=self.container)
         
         blobs = {}
+        
         # Collect blobs
         for blob in self.container_client.list_blobs():
             try:
@@ -45,9 +46,12 @@ class SentinelMosaic:
                 
     def parse_coords(self, coords):
         lat, lat_dec, lon, lon_dec = coords.split('_')
+        n_s = -1 if lat[0] == 'S' else 1
+        e_w = -1 if lon[0] == 'W' else 1
         lat = re.sub('^[A-Z]*0*', '', lat)
         lon = re.sub('^[A-Z]*0*', '', lon)
-        return eval(f"(-{lon}.{lon_dec}, {lat}.{lat_dec}, -{lon}.{lon_dec}+0.25, {lat}.{lat_dec}+0.25)")
+        
+        return eval(f"({e_w}*{lon}.{lon_dec}, {n_s}*{lat}.{lat_dec}, {e_w}*{lon}.{lon_dec}+0.25, {n_s}*{lat}.{lat_dec}+0.25)")
 
 
     def bbox_intersects(self, box1, box2):
@@ -69,6 +73,8 @@ class SentinelMosaic:
         '''
         This function will download the relevant tiles to the download_path if it hasn't already, 
         then it will read in the files and crop it to the bbox specified. 
+
+        If a scene or element from a scene is missing or corrupted, will return None.
         '''
         # Get scenes
         scenes = self.get_scenes(bbox)
@@ -78,36 +84,68 @@ class SentinelMosaic:
             return
 
         # download scenes
-        all_data = None
+        all_data = []
         for scene in scenes:
-            data = None
-            for tif in ['red_median', 'green_median', 'blue_median', 'nir_median']:
-                scene_path = os.path.join(self.download_path, scene)
+            scene_path = os.path.join(self.download_path, scene)
+
+            downloaded = os.path.exists(scene_path)
+
+            if downloaded:
+                print("Loading scene from: \t" + scene_path)
+
+                try:
+                    all_data.append(xr.open_mfdataset(
+                        scene_path+"/*.tif", 
+                        engine="rasterio", 
+                        concat_dim="band", 
+                        combine='nested', 
+                        preprocess=lambda ds: ds.assign_coords(band=[ds.encoding["source"].split('/')[-1].split('_')[0]])
+                    ))
+                except Exception as e:
+                    print(e)
+                    # Redownload
+                    print(f'Failed to load scene: \t{scene}.\n Redownloading and trying again:')
+                    downloaded = False
+
+
+            if not downloaded:
+                print("Downloading scene to: \t" + scene_path)
+                
                 if not os.path.exists(scene_path):
                     os.makedirs(scene_path)
-                blob_client = self.blob_service_client.get_blob_client(
-                    container=self.container, blob=f'{scene}/{tif}.tif')
-                download_file_path = os.path.join(scene_path, f'{tif}.tif')
-                
-                # Download if not already downloaded
-                if not os.path.exists(download_file_path):
-                    print("Downloading blob to \n\t" + download_file_path)
-                    with open(download_file_path, "wb") as download_file:
-                        download_file.write(blob_client.download_blob().readall())
-                tif_data = xr.open_rasterio(download_file_path).assign_coords(
-                    band=[tif.split('_')[0]])
-                if data is None:
-                    data = tif_data
-                else:
-                    data = xr.concat((data, tif_data), dim='band')
-            if all_data is None:
-                all_data = data.rename('var')
-            else:
-                all_data = all_data.combine_first(data)
+
+                for tif in ['red_median', 'green_median', 'blue_median', 'nir_median']:
+                    blob_client = self.blob_service_client.get_blob_client(
+                        container=self.container, blob=f'{scene}/{tif}.tif')
+                    download_file_path = os.path.join(scene_path, f'{tif}.tif')
+
+                    # Download
+                    try:
+                        with open(download_file_path, "wb") as download_file:
+                            download_file.write(blob_client.download_blob().readall())
+                    except Exception as e:
+                        # print(e)
+                        print(f'Failed to download: \t{download_file_path}')
+                        continue
+                try:
+                    all_data.append(xr.open_mfdataset(
+                        scene_path+"/*.tif", 
+                        engine="rasterio", 
+                        concat_dim="band", 
+                        combine='nested', 
+                        preprocess=lambda ds: ds.assign_coords(band=[ds.encoding["source"].split('/')[-1].split('_')[0]])
+                    ))
+                except Exception as e:
+                    print(e)
+                    # Redownload
+                    print(f'Failed to load scene: \t{scene}.')
+                    continue
+
+        data = xr.combine_by_coords(all_data)
 
         # Crop to bounding box
-        all_data = all_data.where((all_data.x >= bbox[0]) &
-                                  (all_data.x <= bbox[2]) &
-                                  (all_data.y >= bbox[1]) &
-                                  (all_data.y <= bbox[3]), drop=True)
-        return all_data
+        data = data.where((data.x >= bbox[0]) &
+                          (data.x <= bbox[2]) &
+                          (data.y >= bbox[1]) &
+                          (data.y <= bbox[3]), drop=True)
+        return data.to_array().squeeze()
